@@ -11,7 +11,7 @@ use tables::HC_STRAIGHT_RANKINGS;
 use tables::HASH_ADJUST;
 use tables::HASH_TABLE;
 
-fn evaluate_hand(hand: &Vec::<&Card>) {
+fn evaluate_hand(hand: &Vec::<&Card>) -> u32 {
     let mut check_flush = 0xF000;
     let mut idx = 0;
     for card in hand {
@@ -31,6 +31,7 @@ fn evaluate_hand(hand: &Vec::<&Card>) {
     for card in hand {
         prime_key *= card.enc & 0xFF;
     }
+
     prime_key += 0xe91aaa35;
     prime_key ^= prime_key >> 16;
     prime_key += prime_key << 8;
@@ -45,17 +46,6 @@ fn evaluate_hand(hand: &Vec::<&Card>) {
     let r: usize = a as usize ^ hashed_usize;
     let ranking: u32 = HASH_TABLE[r];
     return ranking
-    /*let hand_rank =match ranking {
-        6187..=7462 => println!("HIGH CARD!"),
-        3326..=6186 => println!("ONE PAIR!"),
-        2468..=3325 => println!("TWO PAIR!"),
-        1610..=2467 => println!("THREE OF A KIND!"),
-        1600..=1609 => println!("STRAIGHT!"),
-        323..=1599 => println!("FLUSH!"),
-        167..=322 => println!("FULL HOUSE!"),
-        11..=166 => println!("FOUR OF A KIND!"),
-        _ => println!("STRAIGHT FLUSH!"),
-    }*/
 }
 
 
@@ -64,12 +54,6 @@ fn main() {
     let _card = Card::new(Value::Jack, Suit::Spade);
     
     let mut deck: Vec<Card> = Vec::new();
-    //init_deck(int *deck)
-
-
-    // for (int i = 0; i < 4; i++, suit >>= 1)
-    //     for (int j = 0; j < 13; j++, n++)
-    //         deck[n] = primes[j] | (j << 8) | suit | (1 << (16+j));
 
     for s in &Suit::suits() {
         for v in &Value::values(){
@@ -89,6 +73,4 @@ fn main() {
             hand.push(deck.pop().unwrap());
         }
     }
-
-    
 }
